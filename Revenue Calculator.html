@@ -1,0 +1,131 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enrolment Growth Calculator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .info-icon {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: 18px;
+      height: 18px;
+      margin-left: 6px;
+      border-radius: 50%;
+      background-color: #9ca3af;
+      color: #fff;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      position: relative;
+    }
+    .info-tooltip {
+      visibility: hidden;
+      opacity: 0;
+      position: absolute;
+      top: -5px;
+      left: 130%;
+      width: 220px;
+      background-color: #374151;
+      color: #fff;
+      text-align: left;
+      border-radius: 6px;
+      padding: 8px;
+      transition: opacity 0.3s;
+      font-size: 13px;
+      line-height: 1.4;
+      z-index: 10;
+    }
+    .info-icon:hover .info-tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
+    .revenue-box {
+      background-color: #0159A2;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 font-sans">
+  <div class="max-w-lg mx-auto mt-12 bg-white p-8 rounded-2xl shadow-lg">
+    <h1 class="text-2xl font-bold text-center text-gray-800 mb-8">Calculate Your Estimated Added Revenue</h1>
+
+    <!-- Input: Extra Pupils -->
+    <label class="block mb-4">
+      <span class="block text-gray-700 font-semibold mb-2">
+        Extra Students Attracted
+        <span class="info-icon">i
+          <span class="info-tooltip">Estimate the additional students you expect to attract over the lifetime of the tour.</span>
+        </span>
+      </span>
+      <input id="extra-students" type="text" value="0" class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    </label>
+
+    <!-- Input: Payments per Pupil per Year -->
+    <label class="block mb-4">
+      <span class="block text-gray-700 font-semibold mb-2">
+        Government & Parent Payments per Child per Year
+        <span class="info-icon">i
+          <span class="info-tooltip">Enter the total average annual revenue per child, including government funding and parent contributions.</span>
+        </span>
+      </span>
+      <div class="relative">
+        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">$</span>
+        <input id="payment-per-child" type="text" value="0" class="w-full border border-gray-300 rounded-md p-3 pl-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+    </label>
+
+    <!-- Input: Average Years -->
+    <label class="block mb-6">
+      <span class="block text-gray-700 font-semibold mb-2">
+        Average Number of Years Each Child Stays
+        <span class="info-icon">i
+          <span class="info-tooltip">Enter the average length of time a child is enrolled, e.g., 2–4 years for ELCs or 6–10 years for schools.</span>
+        </span>
+      </span>
+      <input id="years-enrolled" type="number" min="0" step="0.1" value="0" class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    </label>
+
+    <!-- Output -->
+    <div class="revenue-box text-white rounded-lg p-6 text-center">
+      <h2 class="font-semibold mb-2">Future Funding you can expect if you move ahead</h2>
+      <div id="total-revenue" class="text-3xl font-bold mb-1">$0</div>
+      <p class="text-sm opacity-90">This represents the additional revenue over the average enrolment period</p>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const extraStudentsInput = document.getElementById('extra-students');
+      const paymentPerChildInput = document.getElementById('payment-per-child');
+      const yearsEnrolledInput = document.getElementById('years-enrolled');
+      const totalRevenueSpan = document.getElementById('total-revenue');
+
+      function formatNumberWithCommas(num) {
+        return num.toLocaleString('en-US');
+      }
+
+      function calculateRevenue() {
+        const extraStudents = parseInt(extraStudentsInput.value.replace(/,/g, '')) || 0;
+        const paymentPerChild = parseInt(paymentPerChildInput.value.replace(/,/g, '')) || 0;
+        const yearsEnrolled = parseFloat(yearsEnrolledInput.value) || 0; // allow decimals
+
+        const totalRevenue = extraStudents * paymentPerChild * yearsEnrolled;
+
+        // Update formatted values for inputs and output
+        extraStudentsInput.value = extraStudents ? formatNumberWithCommas(extraStudents) : '';
+        paymentPerChildInput.value = paymentPerChild ? formatNumberWithCommas(paymentPerChild) : '';
+        totalRevenueSpan.textContent = `$${formatNumberWithCommas(Math.round(totalRevenue))}`;
+      }
+
+      [extraStudentsInput, paymentPerChildInput, yearsEnrolledInput].forEach(input => {
+        input.addEventListener('input', calculateRevenue);
+      });
+
+      calculateRevenue();
+    })();
+  </script>
+</body>
+</html>
